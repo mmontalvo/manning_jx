@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:9.6.15
+    ports:
+      - "5432"
+    networks:
+      - main
+
+  payments:
+    build:
+      context: ./rest_django_payments
+      dockerfile: Dockerfile
+    volumes:
+      - .:/rest_django_payments
+    ports:
+      - "8200:8200"
+    depends_on:
+      - db
+    networks:
+      - main
+
+  trading:
+    build:
+      context: ./rest_django_trading
+      dockerfile: Dockerfile
+    volumes:
+      - .:/rest_django_trading
+    ports:
+      - "8100:8100"
+    depends_on:
+      - db
+    networks:
+      - main
+
+networks:
+  main:
