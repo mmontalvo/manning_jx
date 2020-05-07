@@ -25,7 +25,7 @@ SECRET_KEY = '9l9+6_n*9srxf7ak%#k__#kbeq7ipj8mk6-rj$u81e!2+!^*n7'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -77,11 +77,11 @@ WSGI_APPLICATION = 'rest_django_trading.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'moneyfx',
         'USER': 'postgres',
-	'PASSWORD': '',
-        'HOST': 'db',
+	'PASSWORD': os.environ.get('POSTGRES_PASSWORD', None),
+        'HOST': os.environ.get('TRADING_PG_HOST', None),
         'PORT': 5432,
     }
 }

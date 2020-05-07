@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: trading-migration
+spec:
+  template:
+    metadata:
+      name: trading-migration
+    spec:
+      containers:
+      - name: trading-migration
+        image: gcr.io/vibrant-catbird-275701/rest_django_trading:v1.0.0
+        imagePullPolicy: Always
+        env:
+          - name: POSTGRES_DB
+            value: moneyfx
+          - name: POSTGRES_USER
+            value: postgres
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: restdjangotrading-postgresql
+                key: postgres-password
+          - name: TRADING_PG_HOST
+            value: restdjangotrading-postgresql.default.svc.cluster.local
+        command: [ "/bin/sh", "-c", "python manage.py migrate" ]
+      restartPolicy: Never

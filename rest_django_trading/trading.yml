@@ -1,0 +1,55 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: restdjango-trading
+spec:
+  type: NodePort
+  ports:
+  - name: restdjango-trading
+    port: 8100
+    targetPort: 8100
+    protocol: TCP
+  selector:
+    app: restdjangotrading
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: restdjango-trading
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  template:
+    metadata:
+      labels:
+        name: restdjango-trading
+        app: restdjangotrading
+    spec:
+      containers:
+      - name: rest-django-trading
+        image: gcr.io/vibrant-catbird-275701/rest_django_trading:v1.0.1
+        resources:
+          requests:
+            cpu: 125m
+            memory: 100Mi
+          limits:
+            cpu: 200m
+            memory: 200Mi
+        imagePullPolicy: Always
+        env:
+          - name: POSTGRES_DB
+            value: moneyfx
+          - name: POSTGRES_USER
+            value: postgres
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: restdjangotrading-postgresql
+                key: postgres-password
+          - name: TRADING_PG_HOST
+            value: restdjangotrading-postgresql.default.svc.cluster.local
+        ports:
+        - name: restdjango-port
+          containerPort: 8100
+          protocol: TCP

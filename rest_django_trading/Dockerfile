@@ -6,4 +6,4 @@ COPY requirements.txt /rest_django_trading/
 RUN pip install -r requirements.txt
 ADD . /rest_django_trading/
 
-CMD python rest_django_trading/manage.py runserver 0.0.0.0:8100
+CMD python manage.py runserver 0.0.0.0:8100
